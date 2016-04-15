@@ -10,6 +10,7 @@
 #import <HomeKit/HomeKit.h>
 #import "roomCell.h"
 #import "setMenuViewController.h"
+#import "InRoomAccessoryViewController.h"
 @interface RoomsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIGestureRecognizerDelegate,UITextFieldDelegate>
 {
     UIAlertAction *action;
@@ -176,7 +177,10 @@ static NSString *re=@"rr";
 
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    
+    InRoomAccessoryViewController *invc=[[InRoomAccessoryViewController alloc]init];
+    invc.room=self.home.rooms[indexPath.item];
+    invc.home=self.home;
+    [self.navigationController pushViewController:invc animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

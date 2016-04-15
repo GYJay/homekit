@@ -7,7 +7,7 @@
 //
 
 #import "InRoomAccessoryViewController.h"
-
+#import <HomeKit/HomeKit.h>
 @interface InRoomAccessoryViewController ()
 
 @end
@@ -18,6 +18,31 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
+
+//-(void)addAccessoryToRoom{
+//    __weak __typeof(self)weakSelf = self;
+//    [self.home assignAccessory:self.home.accessories[indexPath.row] toRoom:self.room completionHandler:^(NSError * _Nullable error) {
+//        if (error==nil) {
+//            [weakSelf.table reloadDate];
+//        }
+//    }];
+//}
+//
+//-(void)addTrigger{
+//    [self.home addTrigger:self.trigger completionHandler:^(NSError * _Nullable error) {
+//        if (error==nil) {
+//            [self.table reloadData];
+//        }
+//    }]
+//}
+//
+//-(void)removeTriggerFromRoom{
+//    [self.home removeTrigger:self.home.triggers[indexPath.row] completionHandler:^(NSError * _Nullable error) {
+//        if (error==nil) {
+//            [self.table reloadData];
+//        }
+//    }];
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

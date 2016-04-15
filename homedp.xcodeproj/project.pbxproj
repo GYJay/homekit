@@ -10,6 +10,7 @@
 		21005E481CB7888E0071E6EB /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = 21005E461CB7888E0071E6EB /* add.png */; };
 		21005E491CB7888E0071E6EB /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 21005E471CB7888E0071E6EB /* delete.png */; };
 		21005E4C1CB799560071E6EB /* RoomsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 21005E4B1CB799560071E6EB /* RoomsViewController.m */; };
+		216C525C1CC0D27700A1B09F /* userManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 216C525B1CC0D27700A1B09F /* userManageViewController.m */; };
 		216EC3841CBFC6D8008444A9 /* accessoryInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 216EC3831CBFC6D8008444A9 /* accessoryInfoViewController.m */; };
 		21765BEC1CBDF3E400EBA8FC /* ActionSetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 21765BEB1CBDF3E400EBA8FC /* ActionSetViewController.m */; };
 		21824D501CB770C700BBE3B6 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 21824D481CB770C700BBE3B6 /* ViewController.m */; };
@@ -87,6 +88,8 @@
 		21005E471CB7888E0071E6EB /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete.png; sourceTree = "<group>"; };
 		21005E4A1CB799560071E6EB /* RoomsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomsViewController.h; sourceTree = "<group>"; };
 		21005E4B1CB799560071E6EB /* RoomsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomsViewController.m; sourceTree = "<group>"; };
+		216C525A1CC0D27700A1B09F /* userManageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = userManageViewController.h; sourceTree = "<group>"; };
+		216C525B1CC0D27700A1B09F /* userManageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userManageViewController.m; sourceTree = "<group>"; };
 		216EC3821CBFC6D8008444A9 /* accessoryInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = accessoryInfoViewController.h; sourceTree = "<group>"; };
 		216EC3831CBFC6D8008444A9 /* accessoryInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = accessoryInfoViewController.m; sourceTree = "<group>"; };
 		21765BEA1CBDF3E400EBA8FC /* ActionSetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSetViewController.h; sourceTree = "<group>"; };
@@ -222,6 +225,8 @@
 				21BCA81F1CBCFD5700E90942 /* addRoomToZoneController.m */,
 				21765BEA1CBDF3E400EBA8FC /* ActionSetViewController.h */,
 				21765BEB1CBDF3E400EBA8FC /* ActionSetViewController.m */,
+				216C525A1CC0D27700A1B09F /* userManageViewController.h */,
+				216C525B1CC0D27700A1B09F /* userManageViewController.m */,
 			);
 			path = C;
 			sourceTree = "<group>";
@@ -559,6 +564,7 @@
 				219056751CBB45660095159B /* zoneViewController.m in Sources */,
 				21F650541CBA3D65006EDDC6 /* UITableView+Wave.m in Sources */,
 				218B3B2A1CB9FA7B000FF3DE /* setMenuViewController.m in Sources */,
+				216C525C1CC0D27700A1B09F /* userManageViewController.m in Sources */,
 				21824D501CB770C700BBE3B6 /* ViewController.m in Sources */,
 				2190566E1CBB40DA0095159B /* InRoomAccessoryViewController.m in Sources */,
 				21BCA81D1CBCF27400E90942 /* UIViewController+HYBMoveTransition.m in Sources */,

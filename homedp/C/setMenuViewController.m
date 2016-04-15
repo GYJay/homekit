@@ -13,6 +13,7 @@
 #import "InHomeAccessoryViewController.h"
 #import "zoneViewController.h"
 #import "ActionSetViewController.h"
+#import "userManageViewController.h"
 @interface setMenuViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView *setTable;
 @property(nonatomic,strong)UIButton *back;
@@ -115,7 +116,11 @@ static NSString *ree=@"ree";
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     switch (indexPath.row) {
         case 0:
-            
+        {
+            userManageViewController *uvc=[[userManageViewController alloc] init];
+            uvc.home=self.home;
+            [self.navigationController pushViewController:uvc animated:YES];
+        }
             break;
         case 1:
         {

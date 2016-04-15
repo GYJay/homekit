@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class HMRoom;
+@class HMHome;
 @interface InRoomAccessoryViewController : UIViewController
-
+@property(nonatomic,strong)HMRoom *room;
+@property(nonatomic,strong)HMHome *home;
 @end
