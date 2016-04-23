@@ -25,7 +25,10 @@ static NSString *re=@"rr";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title=self.home.name;
+    self.title=@"房间";
+    NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+    self.navigationController.navigationBar.titleTextAttributes=dict;
+    self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
     
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
     layout.itemSize=CGSizeMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.width/2);
@@ -39,6 +42,7 @@ static NSString *re=@"rr";
     [self.roomViews registerClass:[roomCell class] forCellWithReuseIdentifier:re];
     [self addGesture];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"bgRoom"] forBarMetrics:(UIBarMetricsDefault)];
+    self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"siri_image_large.jpg"]];
 }
 
 
@@ -111,7 +115,7 @@ static NSString *re=@"rr";
                 NSLog(@"add room success");
                 [weakSelf.roomViews reloadData];
             }else{
-                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:@"请不要添加重名的room" preferredStyle:(UIAlertControllerStyleAlert)];
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
                 [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
                 [weakSelf presentViewController:a animated:YES completion:nil];
             }
@@ -149,6 +153,10 @@ static NSString *re=@"rr";
                     [((roomCell*)cell).contentView.layer removeAllAnimations];
                 }
             }
+        }else{
+            UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+            [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+            [weakSelf presentViewController:a animated:YES completion:nil];
         }
     }];
 

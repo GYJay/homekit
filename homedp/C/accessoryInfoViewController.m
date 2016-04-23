@@ -8,6 +8,7 @@
 
 #import "accessoryInfoViewController.h"
 #import <HomeKit/HomeKit.h>
+#import "CharacteristicInfoViewController.h"
 @interface accessoryInfoViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView *accessoryInfo;
 @end
@@ -18,6 +19,7 @@ static NSString *accell=@"accell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title=self.accessory.name;
     self.accessoryInfo=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStyleGrouped)];
     self.accessoryInfo.delegate=self;
     self.accessoryInfo.dataSource=self;
@@ -31,7 +33,7 @@ static NSString *accell=@"accell";
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (section==4) {
-        return self.accessory.services.count;
+        return self.accessory.services.count-1;
     }else{
         return 1;
     }
@@ -64,7 +66,7 @@ static NSString *accell=@"accell";
             cell.textLabel.text=self.accessory.room.name;
             break;
         case 4:
-            cell.textLabel.text=self.accessory.services[indexPath.row].localizedDescription;
+            cell.textLabel.text=self.accessory.services[indexPath.row+1].name;
             break;
         default:
             break;
@@ -93,6 +95,15 @@ static NSString *accell=@"accell";
         default:
             return nil;
             break;
+    }
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.section==4) {
+        CharacteristicInfoViewController *cvc=[[CharacteristicInfoViewController alloc] init];
+        cvc.service=self.accessory.services[indexPath.row+1];
+        cvc.accessory=self.accessory;
+        [self.navigationController pushViewController:cvc animated:YES];
     }
 }
 - (void)didReceiveMemoryWarning {

@@ -14,6 +14,7 @@
 #import "zoneViewController.h"
 #import "ActionSetViewController.h"
 #import "userManageViewController.h"
+#import "ActionInHomeViewController.h"
 @interface setMenuViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView *setTable;
 @property(nonatomic,strong)UIButton *back;
@@ -74,7 +75,7 @@ static NSString *ree=@"ree";
     return 1;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 5;
+    return 6;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     setViewCell *cell=[tableView dequeueReusableCellWithIdentifier:ree];
@@ -84,7 +85,7 @@ static NSString *ree=@"ree";
     switch (indexPath.row) {
         case 0:
             cell.backgroundColor=[UIColor colorWithRed:242/255.0 green:173/255.0 blue:153/255.0 alpha:1];
-            [cell setIcon:[UIImage imageNamed:@"service"] Title:@"服务"];
+            [cell setIcon:[UIImage imageNamed:@"user"] Title:@"用户"];
             break;
         case 1:
             cell.backgroundColor=[UIColor colorWithRed:236/255.0 green:113/255.0 blue:127/255.0 alpha:1];
@@ -92,15 +93,19 @@ static NSString *ree=@"ree";
             break;
         case 2:
             cell.backgroundColor=[UIColor colorWithRed:192.0/255.0 green:108/255.0 blue:132/255.0 alpha:1];
-            [cell setIcon:[UIImage imageNamed:@"action"] Title:@"动作"];
+            [cell setIcon:[UIImage imageNamed:@"trigger"] Title:@"触发器"];
             break;
         case 3:
-            cell.backgroundColor=[UIColor colorWithRed:107/255.0 green:90/255.0 blue:122/255.0 alpha:1];
+            cell.backgroundColor=[UIColor colorWithRed:90/255.0 green:83/255.0 blue:135/255.0 alpha:1];
             [cell setIcon:[UIImage imageNamed:@"zone"] Title:@"分区"];
             break;
         case 4:
-            cell.backgroundColor=[UIColor colorWithRed:55/255.0 green:94/255.0 blue:129/255.0 alpha:1];
+            cell.backgroundColor=[UIColor colorWithRed:72/255.0 green:117/255.0 blue:170/255.0 alpha:1];
             [cell setIcon:[UIImage imageNamed:@"accessory"] Title:@"设备"];
+            break;
+        case 5:
+            cell.backgroundColor=[UIColor colorWithRed:63/255.0 green:81/255.0 blue:181/255.0 alpha:1];
+            [cell setIcon:[UIImage imageNamed:@"action"] Title:@"动作"];
             break;
         default:
             break;
@@ -110,7 +115,7 @@ static NSString *ree=@"ree";
 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return [UIScreen mainScreen].bounds.size.height/5;
+    return [UIScreen mainScreen].bounds.size.height/6;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -146,6 +151,13 @@ static NSString *ree=@"ree";
         case 4:
         {
             InHomeAccessoryViewController *avc=[[InHomeAccessoryViewController alloc] init];
+            avc.home=self.home;
+            [self.navigationController pushViewController:avc animated:YES];
+        }
+            break;
+        case 5:
+        {
+            ActionInHomeViewController *avc=[[ActionInHomeViewController alloc]init];
             avc.home=self.home;
             [self.navigationController pushViewController:avc animated:YES];
         }

@@ -14,6 +14,7 @@
 #import "accessoryInfoViewController.h"
 @interface InHomeAccessoryViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(nonatomic,strong)UITableView *inHomeTable;
+@property(nonatomic,strong)UIButton *b;
 @end
 
 
@@ -22,7 +23,7 @@ static NSString *acell=@"acell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title=[NSString stringWithFormat:@"已在%@中的设备",self.home.name];
+    self.title=[NSString stringWithFormat:@"%@中的设备",self.home.name];
     self.inHomeTable=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStyleGrouped)];
     self.inHomeTable.delegate=self;
     self.inHomeTable.dataSource=self;
@@ -33,6 +34,20 @@ static NSString *acell=@"acell";
     self.inHomeTable.separatorColor=[UIColor clearColor];
     NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     self.navigationController.navigationBar.titleTextAttributes=dict;
+    if (self.isAssignToRoom==YES) {
+        self.b=[[UIButton alloc]initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-40, 30, 30)];
+        self.b.center=CGPointMake(self.view.center.x, self.b.center.y);
+        [self.b setTitle:@"X" forState:(UIControlStateNormal)];
+        [self.b addTarget:self action:@selector(back) forControlEvents:(UIControlEventTouchUpInside)];
+        self.b.layer.cornerRadius=15;
+        [self.b setBackgroundColor:[UIColor redColor]];
+        [self.view addSubview:self.b];
+
+    }
+}
+
+-(void)back{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)searchAccessory{
@@ -45,6 +60,7 @@ static NSString *acell=@"acell";
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     //    [self.navigationController.navigationBar setBackIndicatorImage:<#(UIImage * _Nullable)#>];
+    [self.inHomeTable reloadData];
     self.navigationController.navigationBar.hidden=NO;
 }
 
@@ -65,8 +81,8 @@ static NSString *acell=@"acell";
     if (cell==nil) {
         cell=[[accessoryViewCell alloc]initWithStyle:(UITableViewCellStyleDefault) reuseIdentifier:acell];
     }
-    if (self.home.accessories[indexPath.section].blocked==YES) {
-        [cell setAcName:self.home.accessories[indexPath.section].name available:@"禁用"];
+    if (self.home.accessories[indexPath.section].reachable==NO) {
+        [cell setAcName:self.home.accessories[indexPath.section].name available:@"不可用"];
     }else{
         [cell setAcName:self.home.accessories[indexPath.section].name available:@"可用"];
     }
@@ -75,11 +91,46 @@ static NSString *acell=@"acell";
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    accessoryInfoViewController *avc=[[accessoryInfoViewController alloc] init];
-    avc.accessory=self.home.accessories[indexPath.section];
-    [self.navigationController pushViewController:avc animated:YES];
+    __weak __typeof(self) weakSelf = self;
+    if (self.isAssignToRoom==NO) {
+        accessoryInfoViewController *avc=[[accessoryInfoViewController alloc] init];
+        avc.accessory=self.home.accessories[indexPath.section];
+        [self.navigationController pushViewController:avc animated:YES];
+    }else{
+        [self.home assignAccessory:self.home.accessories[indexPath.section] toRoom:self.room completionHandler:^(NSError * _Nullable error) {
+            if (error==nil) {
+                [weakSelf dismissViewControllerAnimated:YES completion:nil];
+            }else{
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+                [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+                [weakSelf presentViewController:a animated:YES completion:nil];
+            }
+        }];
+    }
+    
 }
 
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    __weak __typeof(self) weakSelf = self;
+    [tableView beginUpdates];
+    [self.home removeAccessory:self.home.accessories[indexPath.section] completionHandler:^(NSError * _Nullable error) {
+        if (error==nil) {
+            NSLog(@"remove accessory success");
+            [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:(UITableViewRowAnimationFade)];
+            [tableView endUpdates];
+        }else{
+            UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+            [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+            [weakSelf presentViewController:a animated:YES completion:nil];
+            [tableView endUpdates];
+        }
+    }];
+}
+
+-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return UITableViewCellEditingStyleDelete;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

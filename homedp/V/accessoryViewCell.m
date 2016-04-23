@@ -20,7 +20,7 @@
     self=[super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.acName=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 30)];
-        self.available=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 30)];
+        self.available=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 90, 30)];
 //        self.acName.textColor=[UIColor whiteColor];
 //        self.available.textColor=[UIColor whiteColor];
         [self.contentView addSubview:self.acName];

@@ -17,21 +17,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor=[UIColor whiteColor];
-    UIButton *b=[[UIButton alloc] initWithFrame:CGRectMake(100, 100, 100, 50)];
-    [b addTarget:self action:@selector(manage) forControlEvents:(UIControlEventTouchUpInside)];
-    [self.view addSubview:b];
-    b.backgroundColor=[UIColor redColor];
-    
-}
-
-
--(void)manage{
+    __weak __typeof (self) weakSelf = self;
     [self.home manageUsersWithCompletionHandler:^(NSError * _Nullable error) {
         if (error==nil) {
-            
+            [weakSelf.navigationController popViewControllerAnimated:YES];
+        }else{
+            UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+            [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+            [weakSelf presentViewController:a animated:YES completion:nil];
         }
+
     }];
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

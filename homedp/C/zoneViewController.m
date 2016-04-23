@@ -76,7 +76,7 @@ static NSString *zoneCell=@"zoneCell";
                 NSLog(@"add zone success");
                 [weakSelf.zoneTable reloadData];
             }else{
-                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:@"请不要添加重名的zone" preferredStyle:(UIAlertControllerStyleAlert)];
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
                 [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
                 [weakSelf presentViewController:a animated:YES completion:nil];
             }
@@ -159,6 +159,10 @@ static NSString *zoneCell=@"zoneCell";
             if (error==nil) {
                 NSLog(@"remove zone success");
                 [weakSelf.zoneTable reloadData];
+            }else{
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+                [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+                [weakSelf presentViewController:a animated:YES completion:nil];
             }
             
         }];
@@ -206,6 +210,11 @@ static NSString *zoneCell=@"zoneCell";
             NSLog(@"remove room success");
             [weakSelf.zoneTable deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section]] withRowAnimation:(UITableViewRowAnimationFade)];
             [weakSelf.zoneTable endUpdates];
+        }else{
+            [tableView endUpdates];
+            UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+            [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+            [weakSelf presentViewController:a animated:YES completion:nil];
         }
     }];
 }

@@ -10,7 +10,6 @@
 #import <HomeKit/HomeKit.h>
 #import "homesCell.h"
 #import "setMenuViewController.h"
-#import "CALayer+drawLine.h"
 @interface ViewController ()<HMHomeManagerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate>
 {
     UIAlertAction *action;
@@ -30,13 +29,10 @@ static NSString *reuse=@"cell";
     self.homemanage.delegate=self;
     
     self.title=@"Homes";
-    self.view.backgroundColor=[UIColor clearColor];
-    //self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"delete"] imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)] style:(UIBarButtonItemStylePlain) target:self action:@selector(deleteHome)];
-    //self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"add"] imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)] style:(UIBarButtonItemStylePlain) target:self action:@selector(addHome)];
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"bg"] forBarMetrics:(UIBarMetricsDefault)];
-    //self.navigationController.navigationBar.shadowImage=[UIImage imageNamed:@"meitu1"];
-    //[self.navigationController.navigationBar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg"]]];
-    NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor colorWithRed:77/255.0 green:177/255.0 blue:250/255.0 alpha:1] forKey:NSForegroundColorAttributeName];
+    self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"siri_image_large.jpg"]];
+    self.navigationController.navigationBar.shadowImage=[UIImage imageNamed:@"meitu1"];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"meitu1"] forBarMetrics:(UIBarMetricsDefault)];
+    NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     self.navigationController.navigationBar.titleTextAttributes=dict;
 
     
@@ -49,7 +45,8 @@ static NSString *reuse=@"cell";
     [self.view addSubview:self.homesView];
     self.homesView.delegate=self;
     self.homesView.dataSource=self;
-    self.homesView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg"]];
+    self.homesView.backgroundColor=[UIColor clearColor];
+    
     [self.homesView registerClass:[homesCell class] forCellWithReuseIdentifier:reuse];
     [self addGesture];
     
@@ -57,6 +54,7 @@ static NSString *reuse=@"cell";
 
 -(void)viewWillAppear:(BOOL)animated{
     self.navigationController.navigationBar.hidden=NO;
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"meitu1"] forBarMetrics:(UIBarMetricsDefault)];
     [self.homemanage.delegate homeManagerDidUpdateHomes:self.homemanage];
     for (UIView *cell in self.homesView.subviews) {
         if ([cell isKindOfClass:[homesCell class]]) {
@@ -102,6 +100,10 @@ static NSString *reuse=@"cell";
                         [((homesCell*)cell).contentView.layer removeAllAnimations];
                     }
                 }
+            }else{
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+                [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+                [weakSelf presentViewController:a animated:YES completion:nil];
             }
         }];
 }
@@ -124,7 +126,7 @@ static NSString *reuse=@"cell";
                 NSLog(@"add home success");
                 [weakSelf.homemanage.delegate homeManagerDidUpdateHomes:weakSelf.homemanage];
             }else{
-                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:@"请不要添加重名的Home" preferredStyle:(UIAlertControllerStyleAlert)];
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
                 [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
                 [weakSelf presentViewController:a animated:YES completion:nil];
             }

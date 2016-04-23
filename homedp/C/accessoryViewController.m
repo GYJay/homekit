@@ -12,6 +12,7 @@
 @interface accessoryViewController ()<UITableViewDelegate,UITableViewDataSource,HMAccessoryBrowserDelegate>
 @property(nonatomic,strong)UITableView *table;
 @property(nonatomic,strong)HMAccessoryBrowser *acb;
+@property(nonatomic,strong)UIButton *b;
 @end
 
 static NSString *accell=@"accell";
@@ -20,7 +21,7 @@ static NSString *accell=@"accell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title=self.home.name;
-    self.table=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStylePlain)];
+    self.table=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStyleGrouped)];
     self.table.delegate=self;
     self.table.dataSource=self;
     [self.view addSubview:self.table];
@@ -30,6 +31,18 @@ static NSString *accell=@"accell";
     self.table.backgroundColor=[UIColor clearColor];
     self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"bgAccessory"]];
     self.table.separatorColor=[UIColor clearColor];
+    
+    self.b=[[UIButton alloc]initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-40, 30, 30)];
+    self.b.center=CGPointMake(self.view.center.x, self.b.center.y);
+    [self.b setTitle:@"X" forState:(UIControlStateNormal)];
+    [self.b addTarget:self action:@selector(back) forControlEvents:(UIControlEventTouchUpInside)];
+    self.b.layer.cornerRadius=15;
+    [self.b setBackgroundColor:[UIColor redColor]];
+    [self.view addSubview:self.b];
+}
+
+-(void)back{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -44,11 +57,11 @@ static NSString *accell=@"accell";
 -(void)accessoryBrowser:(HMAccessoryBrowser *)browser didRemoveNewAccessory:(HMAccessory *)accessory{}
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 1;
+    return self.acb.discoveredAccessories.count;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return self.acb.discoveredAccessories.count;
+    return 1;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -56,28 +69,30 @@ static NSString *accell=@"accell";
     if (cell==nil) {
         cell=[[accessoryViewCell alloc] initWithStyle:(UITableViewCellStyleDefault) reuseIdentifier:accell];
     }
-    if (self.acb.discoveredAccessories[indexPath.row].blocked==YES) {
-        [cell setAcName:self.acb.discoveredAccessories[indexPath.row].name available:@"禁用"];
+    if (self.acb.discoveredAccessories[indexPath.section].reachable==NO) {
+        [cell setAcName:self.acb.discoveredAccessories[indexPath.section].name available:@"不可用"];
     }else{
-        [cell setAcName:self.acb.discoveredAccessories[indexPath.row].name available:@"可用"];
+        [cell setAcName:self.acb.discoveredAccessories[indexPath.section].name available:@"可用"];
     }
-    NSUInteger i=indexPath.row;
-    cell.backgroundColor=[UIColor colorWithRed:(95-i*15)/255.0 green:(201-i*15)/255.0 blue:(197-i*15)/255.0 alpha:1];
+    cell.backgroundColor=[UIColor colorWithRed:95/255.0 green:201/255.0 blue:197/255.0 alpha:1];
     return cell;
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return [UIScreen mainScreen].bounds.size.height/8;
-}
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     __weak __typeof(self) weakSelf = self;
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"提示" message:[NSString stringWithFormat:@"要把此设备添加到%@吗?",self.home.name] preferredStyle:(UIAlertControllerStyleAlert)];
     [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-        [weakSelf.home addAccessory:self.acb.discoveredAccessories[indexPath.row] completionHandler:^(NSError * _Nullable error) {
+        [weakSelf.home addAccessory:self.acb.discoveredAccessories[indexPath.section] completionHandler:^(NSError * _Nullable error) {
             if (error==nil) {
                 NSLog(@"add accessory success");
+                [self.table reloadData];
+                //[weakSelf dismissViewControllerAnimated:YES completion:nil];
+            }else{
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+                [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+                [weakSelf presentViewController:a animated:YES completion:nil];
             }
         }];
     }]];

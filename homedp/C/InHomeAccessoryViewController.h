@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 @class HMHome;
+@class HMRoom;
 @interface InHomeAccessoryViewController : UIViewController
 @property(nonatomic,strong)HMHome *home;
+@property(nonatomic,strong)HMRoom *room;
+@property(nonatomic,assign)BOOL isAssignToRoom;
 @end

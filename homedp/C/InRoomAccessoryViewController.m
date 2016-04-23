@@ -8,41 +8,86 @@
 
 #import "InRoomAccessoryViewController.h"
 #import <HomeKit/HomeKit.h>
-@interface InRoomAccessoryViewController ()
-
+#import "accessoryViewCell.h"
+#import "InHomeAccessoryViewController.h"
+@interface InRoomAccessoryViewController ()<UITableViewDelegate,UITableViewDataSource
+>
+@property(nonatomic,strong)UITableView *accessoryTable;
 @end
+
+static NSString *accell=@"accell";
 
 @implementation InRoomAccessoryViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.title=[NSString stringWithFormat:@"%@中的设备",self.room.name];
+    NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+    self.navigationController.navigationBar.titleTextAttributes=dict;
+    self.accessoryTable=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStyleGrouped)];
+    self.accessoryTable.delegate=self;
+    self.accessoryTable.dataSource=self;
+    [self.view addSubview:self.accessoryTable];
+    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"添加" style:(UIBarButtonItemStylePlain) target:self action:@selector(addAccessory)];
+    self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
 }
 
-//-(void)addAccessoryToRoom{
-//    __weak __typeof(self)weakSelf = self;
-//    [self.home assignAccessory:self.home.accessories[indexPath.row] toRoom:self.room completionHandler:^(NSError * _Nullable error) {
-//        if (error==nil) {
-//            [weakSelf.table reloadDate];
-//        }
-//    }];
-//}
-//
-//-(void)addTrigger{
-//    [self.home addTrigger:self.trigger completionHandler:^(NSError * _Nullable error) {
-//        if (error==nil) {
-//            [self.table reloadData];
-//        }
-//    }]
-//}
-//
-//-(void)removeTriggerFromRoom{
-//    [self.home removeTrigger:self.home.triggers[indexPath.row] completionHandler:^(NSError * _Nullable error) {
-//        if (error==nil) {
-//            [self.table reloadData];
-//        }
-//    }];
-//}
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return self.room.accessories.count;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 1;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    accessoryViewCell *cell=[tableView dequeueReusableCellWithIdentifier:accell];
+    if (cell==nil) {
+        cell=[[accessoryViewCell alloc] initWithStyle:(UITableViewCellStyleDefault) reuseIdentifier:accell];
+    }
+    if (self.room.accessories[indexPath.section].reachable==NO) {
+        [cell setAcName:self.room.accessories[indexPath.section].name available:@"不可用"];
+    }else{
+        [cell setAcName:self.room.accessories[indexPath.section].name available:@"可用"];
+    }
+    return cell;
+}
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    __weak __typeof (self) weakSelf = self;
+    [tableView beginUpdates];
+    [self.home assignAccessory:self.room.accessories[indexPath.section] toRoom:[self.home roomForEntireHome] completionHandler:^(NSError * _Nullable error) {
+        if (error==nil) {
+            [weakSelf.accessoryTable deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:(UITableViewRowAnimationTop)];
+            [weakSelf.accessoryTable endUpdates];
+        }else{
+            [tableView endUpdates];
+            UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+            [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+            [weakSelf presentViewController:a animated:YES completion:nil];
+        }
+    }];
+}
+
+-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return UITableViewCellEditingStyleDelete;
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.accessoryTable reloadData];
+}
+
+-(void)addAccessory{
+    InHomeAccessoryViewController *ivc=[[InHomeAccessoryViewController alloc] init];
+    ivc.home=self.home;
+    ivc.isAssignToRoom=YES;
+    ivc.room=self.room;
+    [self presentViewController:ivc animated:YES completion:nil];
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

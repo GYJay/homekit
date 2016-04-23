@@ -93,6 +93,10 @@
             NSLog(@"add room to zone success");
             [((zoneViewController*)((UINavigationController*)weakSelf.presentingViewController).viewControllers.lastObject).zoneTable reloadData];
             [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        }else{
+            UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+            [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+            [weakSelf presentViewController:a animated:YES completion:nil];
         }
     }];
 }
