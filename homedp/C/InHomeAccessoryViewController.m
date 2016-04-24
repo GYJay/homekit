@@ -112,24 +112,32 @@ static NSString *acell=@"acell";
 
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
-    __weak __typeof(self) weakSelf = self;
-    [tableView beginUpdates];
-    [self.home removeAccessory:self.home.accessories[indexPath.section] completionHandler:^(NSError * _Nullable error) {
-        if (error==nil) {
-            NSLog(@"remove accessory success");
-            [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:(UITableViewRowAnimationFade)];
-            [tableView endUpdates];
-        }else{
-            UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
-            [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
-            [weakSelf presentViewController:a animated:YES completion:nil];
-            [tableView endUpdates];
-        }
-    }];
+    if (self.isAssignToRoom==NO) {
+        __weak __typeof(self) weakSelf = self;
+        [tableView beginUpdates];
+        [self.home removeAccessory:self.home.accessories[indexPath.section] completionHandler:^(NSError * _Nullable error) {
+            if (error==nil) {
+                NSLog(@"remove accessory success");
+                [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:(UITableViewRowAnimationFade)];
+                [tableView endUpdates];
+            }else{
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+                [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+                [weakSelf presentViewController:a animated:YES completion:nil];
+                [tableView endUpdates];
+            }
+        }];
+    }
+   
 }
 
 -(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return UITableViewCellEditingStyleDelete;
+    if (self.isAssignToRoom==NO) {
+        return UITableViewCellEditingStyleDelete;
+    }else{
+        return UITableViewCellEditingStyleNone;
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {
