@@ -10,9 +10,12 @@
 #import <HomeKit/HomeKit.h>
 #import "accessoryViewCell.h"
 #import "InHomeAccessoryViewController.h"
+#import "HYBBubbleTransition.h"
 @interface InRoomAccessoryViewController ()<UITableViewDelegate,UITableViewDataSource
 >
 @property(nonatomic,strong)UITableView *accessoryTable;
+@property(nonatomic,strong)HYBBubbleTransition *bubbleTransition;
+@property(nonatomic,strong)UIButton *b;
 @end
 
 static NSString *accell=@"accell";
@@ -21,7 +24,9 @@ static NSString *accell=@"accell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title=[NSString stringWithFormat:@"%@中的设备",self.room.name];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.title=[NSString stringWithFormat:@"%@的设备",self.room.name];
     NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     self.navigationController.navigationBar.titleTextAttributes=dict;
     self.accessoryTable=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStyleGrouped)];
@@ -30,8 +35,21 @@ static NSString *accell=@"accell";
     [self.view addSubview:self.accessoryTable];
     self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"添加" style:(UIBarButtonItemStylePlain) target:self action:@selector(addAccessory)];
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
+    
+    self.b=[[UIButton alloc]initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-70, 60, 60)];
+    self.b.center=CGPointMake(self.view.center.x, self.b.center.y);
+    [self.b setTitle:@"X" forState:(UIControlStateNormal)];
+    [self.b setTitleColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bgRoom"]] forState:(UIControlStateNormal)];
+    self.b.tag=1010;
+    self.b.layer.cornerRadius=30;
+    [self.b setBackgroundColor:[UIColor whiteColor]];
+    [self.view addSubview:self.b];
+    self.b.hidden=YES;
 }
 
+-(void)update{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.room.accessories.count;
@@ -76,17 +94,38 @@ static NSString *accell=@"accell";
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden=NO;
     [self.accessoryTable reloadData];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    self.accessoryTable.frame=self.view.bounds;
 }
 
 -(void)addAccessory{
     InHomeAccessoryViewController *ivc=[[InHomeAccessoryViewController alloc] init];
+    ivc.br=^(){
+        [self.accessoryTable reloadData];
+        self.accessoryTable.frame=self.view.bounds;
+    };
+    ivc.modalTransitionStyle=UIModalTransitionStyleCrossDissolve;
+    ivc.modalPresentationStyle=UIModalPresentationOverCurrentContext;
+    self.bubbleTransition=[[HYBBubbleTransition alloc] initWithPresented:^(UIViewController *presented, UIViewController *presenting, UIViewController *source, HYBBaseTransition *transition) {
+        HYBBubbleTransition *bubble = (HYBBubbleTransition *)transition;
+        bubble.bubbleColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bgRoom"]];
+        CGPoint center = [self.view viewWithTag:1010].center;
+        center.y += 64;
+        bubble.bubbleStartPoint = center;
+    } dismissed:^(UIViewController *dismissed, HYBBaseTransition *transition) {
+        transition.transitionMode=kHYBTransitionDismiss;
+    }];
     ivc.home=self.home;
     ivc.isAssignToRoom=YES;
     ivc.room=self.room;
-    [self presentViewController:ivc animated:YES completion:nil];
+    ivc.transitioningDelegate=self.bubbleTransition;
+    [self presentViewController:ivc animated:YES completion:NULL];
 }
-
 
 
 - (void)didReceiveMemoryWarning {

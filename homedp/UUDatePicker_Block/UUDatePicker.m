@@ -97,7 +97,7 @@
 - (void)drawRect:(CGRect)rect
 {
     if (self.frame.size.height<216 || self.frame.size.width<375)
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, 375, 216);
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, [UIScreen mainScreen].bounds.size.width, 216);
 
     yearArray   = [self ishave:yearArray];
     monthArray  = [self ishave:monthArray];
@@ -198,7 +198,7 @@
 
 - (void)addLabelWithNames:(NSString *)name withPointX:(NSInteger)point_x
 {
-    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(point_x, 99, 20, 20)];
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(point_x, 98, 20, 20)];
     label.text = name;
     label.textAlignment = NSTextAlignmentCenter;
     label.font = [UIFont systemFontOfSize:18];
@@ -215,7 +215,7 @@
 {
     if (self.datePickerStyle == UUDateStyle_YearMonthDayHourMinute){
         if (isIOS7) {
-            [self creatValuePointXs:@[@"105",@"160",@"215",@"270",@"325"]
+            [self creatValuePointXs:@[@(75.0/320*[UIScreen mainScreen].bounds.size.width),@(130.0/320*[UIScreen mainScreen].bounds.size.width),@(185.0/320*[UIScreen mainScreen].bounds.size.width),@(240.0/320*[UIScreen mainScreen].bounds.size.width),@(295.0/320*[UIScreen mainScreen].bounds.size.width)]
                           withNames:@[@"年",@"月",@"日",@"时",@"分"]];
         }
         return 5;
@@ -286,11 +286,11 @@
 {
     switch (self.datePickerStyle) {
         case UUDateStyle_YearMonthDayHourMinute:{
-            if (component==0) return 70;
-            if (component==1) return 50;
-            if (component==2) return 50;
-            if (component==3) return 50;
-            if (component==4) return 50;
+            if (component==0) return 70.0/320*[UIScreen mainScreen].bounds.size.width;
+            if (component==1) return 50.0/320*[UIScreen mainScreen].bounds.size.width;
+            if (component==2) return 50.0/320*[UIScreen mainScreen].bounds.size.width;
+            if (component==3) return 50.0/320*[UIScreen mainScreen].bounds.size.width;
+            if (component==4) return 50.0/320*[UIScreen mainScreen].bounds.size.width;
         }
             break;
         case UUDateStyle_YearMonthDay:{

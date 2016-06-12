@@ -13,6 +13,7 @@
 @interface ViewController ()<HMHomeManagerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UITextFieldDelegate,UIGestureRecognizerDelegate>
 {
     UIAlertAction *action;
+    UIAlertAction *ac;
 }
 @property(nonatomic,strong)HMHomeManager *homemanage;
 @property(nonatomic,strong)UICollectionView *homesView;
@@ -54,14 +55,21 @@ static NSString *reuse=@"cell";
 
 -(void)viewWillAppear:(BOOL)animated{
     self.navigationController.navigationBar.hidden=NO;
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"meitu1"] forBarMetrics:(UIBarMetricsDefault)];
-    [self.homemanage.delegate homeManagerDidUpdateHomes:self.homemanage];
+    self.navigationController.navigationBar.alpha=0.01;
+     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"meitu1"] forBarMetrics:(UIBarMetricsDefault)];
     for (UIView *cell in self.homesView.subviews) {
         if ([cell isKindOfClass:[homesCell class]]) {
             ((homesCell*)cell).b.hidden=YES;
             ((homesCell*)cell).labelName.enabled=NO;
         }
     }
+    
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    self.navigationController.navigationBar.alpha=1;
+    self.navigationController.navigationBar.hidden=NO;
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"meitu1"] forBarMetrics:(UIBarMetricsDefault)];
 }
 
 
@@ -73,8 +81,10 @@ static NSString *reuse=@"cell";
 -(void)textFieldChanged:(UITextField *)textField{
     if (textField.text.length==0) {
         action.enabled=NO;
+        ac.enabled=NO;
     }else{
         action.enabled=YES;
+        ac.enabled=YES;
     }
 }
 
@@ -127,6 +137,14 @@ static NSString *reuse=@"cell";
                 [weakSelf.homemanage.delegate homeManagerDidUpdateHomes:weakSelf.homemanage];
             }else{
                 UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+                if (error.code==47) {
+                    [a addAction:[UIAlertAction actionWithTitle:@"去设置" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                        dispatch_after(0.2, dispatch_get_main_queue(), ^{
+                            NSURL*url=[NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                            [[UIApplication sharedApplication]openURL:url];
+                        });
+                    }]];
+                }
                 [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
                 [weakSelf presentViewController:a animated:YES completion:nil];
             }
@@ -148,15 +166,23 @@ static NSString *reuse=@"cell";
 //添加home后
 -(void)homeManager:(HMHomeManager *)manager didAddHome:(HMHome *)home{
     [self.homesView reloadData];
+    [[NSNotificationCenter defaultCenter]postNotification:[NSNotification notificationWithName:@"upDateHome" object:nil]];
 }
 //更新home后
 -(void)homeManagerDidUpdateHomes:(HMHomeManager *)manager{
     [self.homesView reloadData];
+    [[NSNotificationCenter defaultCenter]postNotification:[NSNotification notificationWithName:@"upDateHome" object:nil]];
 }
 //更新PrimaryHome后
--(void)homeManagerDidUpdatePrimaryHome:(HMHomeManager *)manager{}
+-(void)homeManagerDidUpdatePrimaryHome:(HMHomeManager *)manager{
+    [self.homesView reloadData];
+    [[NSNotificationCenter defaultCenter]postNotification:[NSNotification notificationWithName:@"upDateHome" object:nil]];
+}
 //移除home后
--(void)homeManager:(HMHomeManager *)manager didRemoveHome:(HMHome *)home{}
+-(void)homeManager:(HMHomeManager *)manager didRemoveHome:(HMHome *)home{
+    [self.homesView reloadData];
+    [[NSNotificationCenter defaultCenter]postNotification:[NSNotification notificationWithName:@"upDateHome" object:nil]];
+}
 
 -(void)addGesture{
     if (self.longPress==nil) {
@@ -189,17 +215,51 @@ static NSString *reuse=@"cell";
     if (indexPath.item<self.homemanage.homes.count) {
         cell.isAdd=NO;
         [cell setLableWithName:((HMHome*)self.homemanage.homes[indexPath.item]).name];
+        [cell.nameB addTarget:self action:@selector(rename:) forControlEvents:(UIControlEventTouchUpInside)];
+        cell.nameB.tag=indexPath.item+100000;
     }else{
         cell.isAdd=YES;
         [cell setLableWithName:nil];
     }
-
+    
     return cell;
 }
 
+-(void)rename:(UIButton *)b{
+    UIAlertController *a=[UIAlertController alertControllerWithTitle:@"重命名" message:@"输入家庭名称" preferredStyle:(UIAlertControllerStyleAlert)];
+    [a addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.delegate = self;
+        textField.placeholder = nil;
+        [textField addTarget:self action:@selector(textFieldChanged:) forControlEvents:(UIControlEventEditingChanged)];
+    }];
+    [a addAction:[UIAlertAction actionWithTitle:@"取消" style:(UIAlertActionStyleDefault) handler:nil]];
+    ac=[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [self.homemanage.homes[b.tag-100000] updateName:self.addHomeName completionHandler:^(NSError * _Nullable error) {
+            if (error==nil) {
+                [self.homesView reloadData];
+                NSLog(@"update success");
+            }else{
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+                [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+                [self presentViewController:a animated:YES completion:nil];
+            }
+        }];
+    }];
+    ac.enabled=NO;
+    [a addAction:ac];
+    [self presentViewController:a animated:YES completion:nil];
+};
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     setMenuViewController *rvc=[[setMenuViewController alloc] init];
+    rvc.updateHome=^(){
+        if (indexPath.item<self.homemanage.homes.count) {
+            return self.homemanage.homes[indexPath.item];
+        }else{
+            HMHome *home;
+            return home;
+        }
+    };
     rvc.home=self.homemanage.homes[indexPath.item];
     rvc.isFromRight=YES;
     [self.navigationController pushViewController:rvc animated:YES];

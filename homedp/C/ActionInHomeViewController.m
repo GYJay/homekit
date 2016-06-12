@@ -23,7 +23,8 @@ static NSString *actionCell=@"actionCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title=[NSString stringWithFormat:@"%@中的动作集",self.home.name];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
+    self.title=[NSString stringWithFormat:@"%@的场景",self.home.name];
     NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     self.navigationController.navigationBar.titleTextAttributes=dict;
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
@@ -37,6 +38,10 @@ static NSString *actionCell=@"actionCell";
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"actionbg"] forBarMetrics:(UIBarMetricsDefault)];
 }
 
+-(void)update{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     self.name = textField.text;
 }
@@ -48,6 +53,16 @@ static NSString *actionCell=@"actionCell";
     }else{
         action.enabled=YES;
     }
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden=NO;
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.hidden=YES;
 }
 
 -(void)addActionSet{
@@ -98,6 +113,7 @@ static NSString *actionCell=@"actionCell";
         cell=[[UITableViewCell alloc]initWithStyle:(UITableViewCellStyleDefault) reuseIdentifier:actionCell];
     }
     cell.textLabel.text=self.home.actionSets[indexPath.row].name;
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
     return cell;
 }
 

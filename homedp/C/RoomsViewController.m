@@ -11,9 +11,10 @@
 #import "roomCell.h"
 #import "setMenuViewController.h"
 #import "InRoomAccessoryViewController.h"
-@interface RoomsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIGestureRecognizerDelegate,UITextFieldDelegate>
+@interface RoomsViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UIGestureRecognizerDelegate,UITextFieldDelegate,HMHomeDelegate>
 {
     UIAlertAction *action;
+    UIAlertAction *ac;
 }
 @property(nonatomic,strong)UICollectionView *roomViews;
 @property(nonatomic,strong)UILongPressGestureRecognizer *longPress;
@@ -25,7 +26,8 @@ static NSString *re=@"rr";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title=@"房间";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
+    self.title=[NSString stringWithFormat:@"%@的房间",self.home.name];
     NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     self.navigationController.navigationBar.titleTextAttributes=dict;
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
@@ -43,6 +45,12 @@ static NSString *re=@"rr";
     [self addGesture];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"bgRoom"] forBarMetrics:(UIBarMetricsDefault)];
     self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"siri_image_large.jpg"]];
+    
+}
+
+
+-(void)update{
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 
@@ -58,11 +66,6 @@ static NSString *re=@"rr";
 }
 
 
--(void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    ((setMenuViewController*)self.navigationController.viewControllers[1]).isFromRight=NO;
-}
-
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     self.addRoomName = textField.text;
 }
@@ -71,8 +74,10 @@ static NSString *re=@"rr";
 -(void)textFieldChanged:(UITextField *)textField{
     if (textField.text.length==0) {
         action.enabled=NO;
+        ac.enabled=NO;
     }else{
         action.enabled=YES;
+        ac.enabled=YES;
     }
 }
 
@@ -176,10 +181,13 @@ static NSString *re=@"rr";
     if (indexPath.item<self.home.rooms.count) {
         cell.isAdd=NO;
         [cell setLableWithName:((HMHome*)self.home.rooms[indexPath.item]).name];
+        [cell.nameB addTarget:self action:@selector(rename:) forControlEvents:(UIControlEventTouchUpInside)];
+        cell.nameB.tag=indexPath.item+1000000;
     }else{
         cell.isAdd=YES;
         [cell setLableWithName:nil];
     }
+    
     return cell;
 }
 
@@ -190,6 +198,32 @@ static NSString *re=@"rr";
     invc.home=self.home;
     [self.navigationController pushViewController:invc animated:YES];
 }
+
+-(void)rename:(UIButton *)b{
+    UIAlertController *a=[UIAlertController alertControllerWithTitle:@"重命名" message:@"输入房间名称" preferredStyle:(UIAlertControllerStyleAlert)];
+    [a addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.delegate = self;
+        textField.placeholder = nil;
+        [textField addTarget:self action:@selector(textFieldChanged:) forControlEvents:(UIControlEventEditingChanged)];
+    }];
+    [a addAction:[UIAlertAction actionWithTitle:@"取消" style:(UIAlertActionStyleDefault) handler:nil]];
+    ac=[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        [self.home.rooms[b.tag-1000000] updateName:self.addRoomName completionHandler:^(NSError * _Nullable error) {
+            if (error==nil) {
+                [self.roomViews reloadData];
+                NSLog(@"update success");
+            }else{
+                UIAlertController *a=[UIAlertController alertControllerWithTitle:@"提示" message:[error.userInfo allValues][0] preferredStyle:(UIAlertControllerStyleAlert)];
+                [a addAction:[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:nil]];
+                [self presentViewController:a animated:YES completion:nil];
+            }
+        }];
+    }];
+    ac.enabled=NO;
+    [a addAction:ac];
+    [self presentViewController:a animated:YES completion:nil];
+};
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

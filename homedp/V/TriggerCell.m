@@ -16,7 +16,7 @@
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     self=[super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.s=[[UISwitch alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width-90, 5, 60, 30)];
+        self.s=[[UISwitch alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width-80, 5, 60, 30)];
         [self.contentView addSubview:self.s];
     }
     return self;

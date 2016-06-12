@@ -24,6 +24,7 @@ static NSString *zoneCell=@"zoneCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
     self.view.backgroundColor=[UIColor whiteColor];
     self.title=[NSString stringWithFormat:@"%@的分组",self.home.name];
     self.zoneTable=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStyleGrouped)];
@@ -35,8 +36,13 @@ static NSString *zoneCell=@"zoneCell";
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"bgZone"] forBarMetrics:(UIBarMetricsDefault)];
     NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     self.navigationController.navigationBar.titleTextAttributes=dict;
-    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:(UIBarButtonItemStylePlain) target:self action:@selector(back)];
+    //self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"] style:(UIBarButtonItemStylePlain) target:self action:@selector(back)];
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
+}
+
+
+-(void)update{
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 -(void)back{
@@ -171,9 +177,15 @@ static NSString *zoneCell=@"zoneCell";
     [self presentViewController:a animated:YES completion:nil];
 }
 
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.hidden=YES;
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.zoneTable reloadData];
+    self.navigationController.navigationBar.hidden=NO;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{

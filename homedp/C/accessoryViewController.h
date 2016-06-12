@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 @class HMHome;
+typedef void(^backReload)();
 @interface accessoryViewController : UIViewController
 @property(nonatomic,strong)HMHome *home;
+@property(nonatomic,copy)backReload br;
 @end

@@ -27,6 +27,7 @@ static NSString *ree=@"ree";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
     self.setTable=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStylePlain)];
     self.setTable.delegate=self;
     self.setTable.dataSource=self;
@@ -37,13 +38,17 @@ static NSString *ree=@"ree";
     self.navigationController.navigationBar.hidden=YES;
     self.automaticallyAdjustsScrollViewInsets=NO;
     
-    self.back=[[UIButton alloc] initWithFrame:CGRectMake(10, 20, 32, 32)];
+   
+    self.back=[[UIButton alloc] initWithFrame:CGRectMake(0, 20, 50, 50)];
     [self.back setBackgroundImage:[UIImage imageNamed:@"back"] forState:(UIControlStateNormal)];
     [self.back addTarget:self action:@selector(backTo) forControlEvents:(UIControlEventTouchUpInside)];
     [self.view addSubview:self.back];
     
 }
 
+-(void)update{
+    self.home=self.updateHome();
+}
 
 -(void)backTo{
     [self.navigationController popViewControllerAnimated:YES];
@@ -53,20 +58,19 @@ static NSString *ree=@"ree";
 {
     [super viewDidAppear:animated];
     self.setTable.hidden=NO;
-    if (self.isFromRight==YES) {
-        [self.setTable reloadDataAnimateWithWave:RightToLeftWaveAnimation];
-    }else{
-        [self.setTable reloadDataAnimateWithWave:LeftToRightWaveAnimation];
-    }
-    
     self.back.hidden=NO;
+    [self.setTable reloadDataAnimateWithWave:RightToLeftWaveAnimation];
+    
+    
 }
 
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden=YES;
     self.setTable.hidden=YES;
+    self.navigationController.navigationBar.hidden=YES;
+    self.navigationController.navigationBar.alpha=1;
+    
     self.back.hidden=YES;
 }
 
@@ -105,7 +109,7 @@ static NSString *ree=@"ree";
             break;
         case 5:
             cell.backgroundColor=[UIColor colorWithRed:63/255.0 green:81/255.0 blue:181/255.0 alpha:1];
-            [cell setIcon:[UIImage imageNamed:@"action"] Title:@"动作"];
+            [cell setIcon:[UIImage imageNamed:@"action"] Title:@"场景"];
             break;
         default:
             break;

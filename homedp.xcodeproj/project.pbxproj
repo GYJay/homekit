@@ -37,6 +37,8 @@
 		21BCA81C1CBCF27400E90942 /* HYBMoveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 21BCA8151CBCF27400E90942 /* HYBMoveTransition.m */; };
 		21BCA81D1CBCF27400E90942 /* UIViewController+HYBMoveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 21BCA8171CBCF27400E90942 /* UIViewController+HYBMoveTransition.m */; };
 		21BCA8201CBCFD5700E90942 /* addRoomToZoneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 21BCA81F1CBCFD5700E90942 /* addRoomToZoneController.m */; };
+		21C48C391D00241300AD315C /* back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 21C48C381D00241300AD315C /* back@2x.png */; };
+		21C48C3B1D0060BA00AD315C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21C48C3A1D0060BA00AD315C /* QuartzCore.framework */; };
 		21C73D531CC92F010098E562 /* timeTriggerManageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 21C73D521CC92F010098E562 /* timeTriggerManageController.m */; };
 		21CE850D1C8EAF58001E8633 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 21CE850C1C8EAF58001E8633 /* main.m */; };
 		21CE85101C8EAF58001E8633 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 21CE850F1C8EAF58001E8633 /* AppDelegate.m */; };
@@ -54,7 +56,6 @@
 		21F9E1671CC6901600E5F8E5 /* UUDatePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F9E1641CC6901600E5F8E5 /* UUDatePicker.m */; };
 		21F9E1681CC6901600E5F8E5 /* UUDatePicker_DateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F9E1661CC6901600E5F8E5 /* UUDatePicker_DateModel.m */; };
 		21FAC4831CC9EC630025DECE /* ActionAddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 21FAC4821CC9EC630025DECE /* ActionAddViewController.m */; };
-		21FCA5991CBA57B8006D4FAA /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 21FCA5981CBA57B8006D4FAA /* back.png */; };
 		21FCA59B1CBA5DA0006D4FAA /* user.png in Resources */ = {isa = PBXBuildFile; fileRef = 21FCA59A1CBA5DA0006D4FAA /* user.png */; };
 		21FCA59D1CBA5F46006D4FAA /* room1.png in Resources */ = {isa = PBXBuildFile; fileRef = 21FCA59C1CBA5F46006D4FAA /* room1.png */; };
 		21FCA59F1CBA6094006D4FAA /* action.png in Resources */ = {isa = PBXBuildFile; fileRef = 21FCA59E1CBA6094006D4FAA /* action.png */; };
@@ -141,6 +142,8 @@
 		21BCA8171CBCF27400E90942 /* UIViewController+HYBMoveTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HYBMoveTransition.m"; sourceTree = "<group>"; };
 		21BCA81E1CBCFD5700E90942 /* addRoomToZoneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addRoomToZoneController.h; sourceTree = "<group>"; };
 		21BCA81F1CBCFD5700E90942 /* addRoomToZoneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = addRoomToZoneController.m; sourceTree = "<group>"; };
+		21C48C381D00241300AD315C /* back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@2x.png"; sourceTree = "<group>"; };
+		21C48C3A1D0060BA00AD315C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		21C73D511CC92F010098E562 /* timeTriggerManageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timeTriggerManageController.h; sourceTree = "<group>"; };
 		21C73D521CC92F010098E562 /* timeTriggerManageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = timeTriggerManageController.m; sourceTree = "<group>"; };
 		21CE85081C8EAF58001E8633 /* homedp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = homedp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -172,7 +175,6 @@
 		21F9E1661CC6901600E5F8E5 /* UUDatePicker_DateModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUDatePicker_DateModel.m; sourceTree = "<group>"; };
 		21FAC4811CC9EC630025DECE /* ActionAddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionAddViewController.h; sourceTree = "<group>"; };
 		21FAC4821CC9EC630025DECE /* ActionAddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionAddViewController.m; sourceTree = "<group>"; };
-		21FCA5981CBA57B8006D4FAA /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
 		21FCA59A1CBA5DA0006D4FAA /* user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user.png; sourceTree = "<group>"; };
 		21FCA59C1CBA5F46006D4FAA /* room1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = room1.png; sourceTree = "<group>"; };
 		21FCA59E1CBA6094006D4FAA /* action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = action.png; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21C48C3B1D0060BA00AD315C /* QuartzCore.framework in Frameworks */,
 				21CE853F1C8EB0BD001E8633 /* HomeKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,7 +285,7 @@
 				21FCA5A21CBA635C006D4FAA /* accessory.png */,
 				21FCA5A81CBA6DEF006D4FAA /* bgZone.png */,
 				21FCA5A61CBA6A08006D4FAA /* bg.png */,
-				21FCA5981CBA57B8006D4FAA /* back.png */,
+				21C48C381D00241300AD315C /* back@2x.png */,
 				21FCA5B01CBA6E0B006D4FAA /* bgAccessory.png */,
 				218B3B321CBA1C8B000FF3DE /* cha.png */,
 				21FCA59E1CBA6094006D4FAA /* action.png */,
@@ -340,6 +343,7 @@
 		21CE84FF1C8EAF58001E8633 = {
 			isa = PBXGroup;
 			children = (
+				21C48C3A1D0060BA00AD315C /* QuartzCore.framework */,
 				21CE853E1C8EB0BD001E8633 /* HomeKit.framework */,
 				21CE850A1C8EAF58001E8633 /* homedp */,
 				21CE85241C8EAF58001E8633 /* homedpTests */,
@@ -498,6 +502,9 @@
 							com.apple.HomeKit = {
 								enabled = 1;
 							};
+							com.apple.iCloud = {
+								enabled = 0;
+							};
 						};
 					};
 					21CE85201C8EAF58001E8633 = {
@@ -552,10 +559,10 @@
 				21824D521CB770C700BBE3B6 /* 2.png in Resources */,
 				21FCA5AD1CBA6DFA006D4FAA /* bgRoom.png in Resources */,
 				21FCA5A71CBA6A08006D4FAA /* bg.png in Resources */,
+				21C48C391D00241300AD315C /* back@2x.png in Resources */,
 				21E44F191CB7D9BA0017A432 /* meitu1.png in Resources */,
 				21FCA5A91CBA6DEF006D4FAA /* bgZone.png in Resources */,
 				21FCA59D1CBA5F46006D4FAA /* room1.png in Resources */,
-				21FCA5991CBA57B8006D4FAA /* back.png in Resources */,
 				21FCA59B1CBA5DA0006D4FAA /* user.png in Resources */,
 				21CE85161C8EAF58001E8633 /* Main.storyboard in Resources */,
 				21FCA5A31CBA635C006D4FAA /* accessory.png in Resources */,
@@ -713,6 +720,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "93eb4e6d-2d86-4669-9d8a-632e46e9a80a";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -750,6 +758,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "93eb4e6d-2d86-4669-9d8a-632e46e9a80a";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

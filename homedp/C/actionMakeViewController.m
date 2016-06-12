@@ -91,6 +91,8 @@ static NSString *actionMakeCell=@"actionMakeCell";
     [self.back addTarget:self action:@selector(cancel) forControlEvents:(UIControlEventTouchUpInside)];
 }
 
+
+
 -(void)backTo{
     __weak __typeof(self)weakSelf=self;
     if (self.selectCharacteristic==nil||self.targetValue.text.length==0) {
@@ -132,6 +134,30 @@ static NSString *actionMakeCell=@"actionMakeCell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    CGPoint p=[self.view convertPoint:textField.frame.origin fromView:textField.superview];
+    CGFloat offset=self.view.frame.size.height-(p.y+textField.frame.size.height+50+216);
+    if (offset<=0) {
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame=self.actionMakeTable.frame;
+            frame.origin.y=offset;
+            self.actionMakeTable.frame=frame;
+        }];
+    }
+    return YES;
+}
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame=self.actionMakeTable.frame;
+            frame.origin.y=0;
+            self.actionMakeTable.frame=frame;
+        }];
+    return YES;
+}
+
+
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     if ([textField isEqual:self.targetValue]) {
         [self.targetValue resignFirstResponder];
@@ -166,16 +192,19 @@ static NSString *actionMakeCell=@"actionMakeCell";
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
     if (pickerView.tag==10000) {
-        if (![self.selectAccessory isEqual:self.home.accessories[row]]) {
-            self.selectService=nil;
-            self.serviceName.text=nil;
-            self.selectCharacteristic=nil;
-            self.characteristicName.text=nil;
-            self.targetValue.placeholder=nil;
-            self.targetValue.text=nil;
+        if (self.home.accessories.count!=0) {
+            if (![self.selectAccessory isEqual:self.home.accessories[row]]) {
+                self.selectService=nil;
+                self.serviceName.text=nil;
+                self.selectCharacteristic=nil;
+                self.characteristicName.text=nil;
+                self.targetValue.placeholder=nil;
+                self.targetValue.text=nil;
+            }
+            self.selectAccessory=self.home.accessories[row];
+            self.accessoryName.text=self.selectAccessory.name;
         }
-        self.selectAccessory=self.home.accessories[row];
-        self.accessoryName.text=self.selectAccessory.name;
+        
     }else if (pickerView.tag==10001){
         if (self.selectAccessory.services.count>1) {
             if (![self.selectService isEqual:self.selectAccessory.services[row+1]]) {

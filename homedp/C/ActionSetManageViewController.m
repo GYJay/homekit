@@ -19,7 +19,7 @@ static NSString *actionsCell=@"actionsCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
     self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"添加" style:(UIBarButtonItemStylePlain) target:self action:@selector(addAction)];
     
     self.actionTable=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStylePlain)];
@@ -28,6 +28,14 @@ static NSString *actionsCell=@"actionsCell";
     [self.view addSubview:self.actionTable];
 }
 
+-(void)update{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden=NO;
+}
 
 -(void)addAction{
      __weak __typeof(self)weakSelf=self;
@@ -64,7 +72,7 @@ static NSString *actionsCell=@"actionsCell";
     }
     
     cell.detailTextLabel.text=[NSString stringWithFormat:@"%@→%@",((HMCharacteristicWriteAction*)[self.actionSet.actions allObjects][indexPath.row]).characteristic.localizedDescription,value];
-    
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
     return cell;
 }
 

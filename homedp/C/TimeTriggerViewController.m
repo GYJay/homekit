@@ -60,9 +60,10 @@ static NSString *timeTrigger=@"timeTrigger";
     
     
     self.tf=[[UITextField alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
+    self.tf.placeholder=@"必填";
     
     __weak __typeof (self) weakSelf = self;
-    self.udataPicker=[[UUDatePicker alloc] initWithframe:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 200) PickerStyle:0 didSelected:^(NSString *year, NSString *month, NSString *day, NSString *hour, NSString *minute, NSString *weekDay) {
+    self.udataPicker=[[UUDatePicker alloc] initWithframe:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 216) PickerStyle:0 didSelected:^(NSString *year, NSString *month, NSString *day, NSString *hour, NSString *minute, NSString *weekDay) {
         weakSelf.tf.text=[NSString stringWithFormat:@"%@年%@月%@日%@时%@分",year,month,day,hour,minute];
         NSDateFormatter *formatter=[[NSDateFormatter alloc] init];
         formatter.dateFormat=@"yyyyMMddHHmm";
@@ -94,6 +95,7 @@ static NSString *timeTrigger=@"timeTrigger";
     
     
     self.re=[[UITextField alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
+    self.re.delegate=self;
     self.re.textAlignment=NSTextAlignmentCenter;
     self.recourTime=[[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 200)];
     _recourTime.backgroundColor=[UIColor whiteColor];
@@ -233,6 +235,36 @@ static NSString *timeTrigger=@"timeTrigger";
     }
 }
 
+
+-(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
+    UILabel *l=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width/4, 30)];
+    l.textAlignment=NSTextAlignmentCenter;
+    if (pickerView.tag==10001) {
+        switch (component) {
+            case 0:
+                l.text=[NSString stringWithFormat:@"%@周",weeks[row]];
+                break;
+            case 1:
+                l.text=[NSString stringWithFormat:@"%@天",days[row]];
+                break;
+            case 2:
+                l.text=[NSString stringWithFormat:@"%@小时",hours[row]];
+                break;
+            case 3:
+                l.text=[NSString stringWithFormat:@"%@分",minutes[row]];
+                break;
+            default:
+                break;
+        }
+        return l;
+    }else{
+        l.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 30);
+        l.text=[NSTimeZone knownTimeZoneNames][row];
+        return l;
+    }
+}
+
+
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 5;
 }
@@ -249,6 +281,10 @@ static NSString *timeTrigger=@"timeTrigger";
     switch (indexPath.section) {
         case 0:
             cell.textLabel.text=self.name;
+            if (self.name.length==0||self.name==nil) {
+                cell.textLabel.text=@"必填";
+            }
+            cell.selectionStyle=UITableViewCellSelectionStyleNone;
             cell.textLabel.textAlignment=NSTextAlignmentCenter;
             break;
         case 1:
@@ -296,8 +332,38 @@ static NSString *timeTrigger=@"timeTrigger";
 
 }
 
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    CGPoint p=[self.view convertPoint:textField.frame.origin fromView:textField.superview];
+    CGFloat offset=self.view.frame.size.height-(p.y+textField.frame.size.height+50+216);
+    if (offset<0) {
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame=self.timeTrigger.frame;
+            frame.origin.y=offset;
+            self.timeTrigger.frame=frame;
+        }];
+    }
+    return YES;
+}
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
+    [UIView animateWithDuration:0.3 animations:^{
+        CGRect frame=self.timeTrigger.frame;
+        frame.origin.y=0;
+        self.timeTrigger.frame=frame;
+    }];
+    
+    return YES;
+}
+
+
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    self.name = textField.text;
+    if (textField.tag==1001) {
+        if (textField.text.length!=0) {
+            self.name = textField.text;
+        }
+        
+    }
+    
 }
 
 -(void)resign{
@@ -328,6 +394,7 @@ static NSString *timeTrigger=@"timeTrigger";
             UIAlertController *a=[UIAlertController alertControllerWithTitle:@"触发器名称" message:@"输入触发器名称" preferredStyle:(UIAlertControllerStyleAlert)];
             [a addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
                 textField.delegate=self;
+                textField.tag=1001;
                 [textField addTarget:self action:@selector(textFieldChanged:) forControlEvents:(UIControlEventEditingChanged)];
             }];
             action=[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {

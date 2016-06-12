@@ -21,8 +21,6 @@
     if (self) {
         self.acName=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 30)];
         self.available=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 90, 30)];
-//        self.acName.textColor=[UIColor whiteColor];
-//        self.available.textColor=[UIColor whiteColor];
         [self.contentView addSubview:self.acName];
         [self.contentView addSubview:self.available];
         self.selectionStyle=UITableViewCellSelectionStyleNone;
@@ -33,7 +31,7 @@
 
 -(void)setAcName:(NSString *)name available:(NSString *)available{
     self.acName.center=CGPointMake(70, self.contentView.center.y);
-    self.available.center=CGPointMake(self.contentView.center.x+20, self.contentView.center.y);
+    self.available.center=CGPointMake([UIScreen mainScreen].bounds.size.width/2, self.contentView.center.y);
     self.acName.text=name;
     self.available.text=available;
 }

@@ -17,6 +17,7 @@
     NSArray *days;
     NSArray *hours;
     NSArray *minutes;
+    NSInteger firstTag;
 }
 @property(nonatomic,strong)UITableView *triggerManage;
 @property(nonatomic,copy)NSString *name;
@@ -42,6 +43,8 @@ static NSString *tcell=@"tcell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title=@"设置触发器";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
     self.triggerManage=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStyleGrouped)];
     self.triggerManage.delegate=self;
     self.triggerManage.dataSource=self;
@@ -66,7 +69,7 @@ static NSString *tcell=@"tcell";
     self.tf.text=[formatter stringFromDate:self.trigger.fireDate];
     
     __weak __typeof (self) weakSelf = self;
-    self.udataPicker=[[UUDatePicker alloc] initWithframe:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 200) PickerStyle:0 didSelected:^(NSString *year, NSString *month, NSString *day, NSString *hour, NSString *minute, NSString *weekDay) {
+    self.udataPicker=[[UUDatePicker alloc] initWithframe:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 216) PickerStyle:0 didSelected:^(NSString *year, NSString *month, NSString *day, NSString *hour, NSString *minute, NSString *weekDay) {
         weakSelf.tf.text=[NSString stringWithFormat:@"%@年%@月%@日%@时%@分",year,month,day,hour,minute];
         NSDateFormatter *formatter=[[NSDateFormatter alloc] init];
         formatter.dateFormat=@"yyyyMMddHHmm";
@@ -87,6 +90,8 @@ static NSString *tcell=@"tcell";
     
     
     self.tz=[[UITextField alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
+    self.tz.delegate=self;
+    self.tz.tag=5000;
     self.tz.textAlignment=NSTextAlignmentCenter;
     UIPickerView *pick=[[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 200)];
     pick.backgroundColor=[UIColor whiteColor];
@@ -100,6 +105,8 @@ static NSString *tcell=@"tcell";
     
     self.re=[[UITextField alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
     self.re.textAlignment=NSTextAlignmentCenter;
+    self.re.tag=5001;
+    self.re.delegate=self;
     self.recourTime=[[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 200)];
     _recourTime.backgroundColor=[UIColor whiteColor];
     _recourTime.delegate=self;
@@ -127,6 +134,15 @@ static NSString *tcell=@"tcell";
     [self.back addTarget:self action:@selector(backto)
         forControlEvents:(UIControlEventTouchUpInside)];
 
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden=NO;
+}
+
+-(void)update{
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 
@@ -293,6 +309,35 @@ static NSString *tcell=@"tcell";
     }
 }
 
+-(UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
+    UILabel *l=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width/4, 30)];
+    l.textAlignment=NSTextAlignmentCenter;
+    if (pickerView.tag==10001) {
+        switch (component) {
+            case 0:
+                l.text=[NSString stringWithFormat:@"%@周",weeks[row]];
+                break;
+            case 1:
+                l.text=[NSString stringWithFormat:@"%@天",days[row]];
+                break;
+            case 2:
+                l.text=[NSString stringWithFormat:@"%@小时",hours[row]];
+                break;
+            case 3:
+                l.text=[NSString stringWithFormat:@"%@分",minutes[row]];
+                break;
+            default:
+                break;
+        }
+        return l;
+    }else{
+        l.frame=CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 30);
+        l.text=[NSTimeZone knownTimeZoneNames][row];
+        return l;
+    }
+}
+
+
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 6;
 }
@@ -391,12 +436,43 @@ static NSString *tcell=@"tcell";
     
 }
 
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    CGPoint p=[self.view convertPoint:textField.frame.origin fromView:textField.superview];
+    CGFloat offset=self.view.frame.size.height-(p.y+textField.frame.size.height+50+216);
+    firstTag=textField.tag;
+    if (offset<0) {
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame=self.triggerManage.frame;
+            frame.origin.y=offset;
+            self.triggerManage.frame=frame;
+        }];
+    }
+    return YES;
+}
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField{
+    if (textField.tag==firstTag) {
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame=self.triggerManage.frame;
+            frame.origin.y=0;
+            self.triggerManage.frame=frame;
+        }];
+    }
+    return YES;
+}
+
 -(void)textFieldDidBeginEditing:(UITextField *)textField{
     self.udataPicker.minLimitDate=[NSDate dateWithTimeIntervalSinceNow:0];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    self.name = textField.text;
+    if (textField.tag==1001) {
+        if (textField.text.length!=0) {
+             self.name = textField.text;
+        }
+       
+    }
+    
 }
 
 -(void)resign{
@@ -428,6 +504,7 @@ static NSString *tcell=@"tcell";
             UIAlertController *a=[UIAlertController alertControllerWithTitle:@"触发器名称" message:@"输入触发器名称" preferredStyle:(UIAlertControllerStyleAlert)];
             [a addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
                 textField.delegate=self;
+                textField.tag=1001;
                 [textField addTarget:self action:@selector(textFieldChanged:) forControlEvents:(UIControlEventEditingChanged)];
             }];
             action=[UIAlertAction actionWithTitle:@"确定" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {

@@ -32,18 +32,22 @@ static NSString *accell=@"accell";
     self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"bgAccessory"]];
     self.table.separatorColor=[UIColor clearColor];
     
-    self.b=[[UIButton alloc]initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-40, 30, 30)];
+    self.b=[[UIButton alloc]initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height-70, 60, 60)];
     self.b.center=CGPointMake(self.view.center.x, self.b.center.y);
     [self.b setTitle:@"X" forState:(UIControlStateNormal)];
+    [self.b setTitleColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bgAccessory"]] forState:(UIControlStateNormal)];
     [self.b addTarget:self action:@selector(back) forControlEvents:(UIControlEventTouchUpInside)];
-    self.b.layer.cornerRadius=15;
-    [self.b setBackgroundColor:[UIColor redColor]];
+    self.b.layer.cornerRadius=30;
+    [self.b setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.b];
+    self.table.frame=CGRectMake(self.table.frame.origin.x, self.table.frame.origin.y, self.table.frame.size.height, self.table.frame.size.height-80);
 }
 
 -(void)back{
+    self.br();
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
 
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -54,7 +58,9 @@ static NSString *accell=@"accell";
 -(void)accessoryBrowser:(HMAccessoryBrowser *)browser didFindNewAccessory:(HMAccessory *)accessory{
     [self.table reloadData];
 }
--(void)accessoryBrowser:(HMAccessoryBrowser *)browser didRemoveNewAccessory:(HMAccessory *)accessory{}
+-(void)accessoryBrowser:(HMAccessoryBrowser *)browser didRemoveNewAccessory:(HMAccessory *)accessory{
+    [self.table reloadData];
+}
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.acb.discoveredAccessories.count;
@@ -74,7 +80,7 @@ static NSString *accell=@"accell";
     }else{
         [cell setAcName:self.acb.discoveredAccessories[indexPath.section].name available:@"可用"];
     }
-    cell.backgroundColor=[UIColor colorWithRed:95/255.0 green:201/255.0 blue:197/255.0 alpha:1];
+   cell.backgroundColor=[[UIColor whiteColor] colorWithAlphaComponent:0.3];
     return cell;
 }
 

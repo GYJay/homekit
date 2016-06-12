@@ -19,7 +19,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
     UIButton *b=[[UIButton alloc] initWithFrame:CGRectMake(10, 20, 30, 30)];
     [b setBackgroundImage:[UIImage imageNamed:@"back"] forState:(UIControlStateNormal)];
     [b addTarget:self action:@selector(back) forControlEvents:(UIControlEventTouchUpInside)];
@@ -45,6 +45,10 @@
     [self.view addSubview:b];
 }
 
+
+-(void)update{
+    [self.roomsTableView reloadData];
+}
 
 -(void)back{
     [self dismissViewControllerAnimated:YES completion:nil];

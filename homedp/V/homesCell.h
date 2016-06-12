@@ -13,7 +13,8 @@
 @property(nonatomic,strong)UILabel *labelName;
 @property(nonatomic,assign)BOOL isAdd;
 @property(nonatomic,strong)UIButton *b;
--(void)deleted;
+@property(nonatomic,strong)UIButton *nameB;
+//-(void)deleted;
 -(void)setLableWithName:(NSString *)name;
 -(void)doAnimate;
 @end

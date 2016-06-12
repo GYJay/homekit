@@ -23,7 +23,8 @@ static NSString *actionCell=@"actioncell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title=[NSString stringWithFormat:@"%@中的触发器",self.home.name];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
+    self.title=[NSString stringWithFormat:@"%@的触发器",self.home.name];
     NSDictionary * dict = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     self.navigationController.navigationBar.titleTextAttributes=dict;
     self.navigationController.navigationBar.tintColor=[UIColor whiteColor];
@@ -36,6 +37,19 @@ static NSString *actionCell=@"actioncell";
     self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"添加" style:(UIBarButtonItemStylePlain) target:self action:@selector(addTrigger)];
 }
 
+-(void)update{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.hidden=YES;
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden=NO;
+}
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return self.home.triggers.count;
@@ -176,9 +190,9 @@ static NSString *actionCell=@"actioncell";
         [weakSelf addTimeTrigger];
     }]];
     
-    [a addAction:[UIAlertAction actionWithTitle:@"事件触发器" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-        [weakSelf addEventTrigger];
-    }]];
+//    [a addAction:[UIAlertAction actionWithTitle:@"事件触发器" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+//        [weakSelf addEventTrigger];
+//    }]];
     
     [a addAction:[UIAlertAction actionWithTitle:@"取消" style:(UIAlertActionStyleCancel) handler:nil]];
     

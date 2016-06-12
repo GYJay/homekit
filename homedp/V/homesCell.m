@@ -41,6 +41,12 @@
         [self.contentView addSubview:self.b];
         [self.b addTarget:self action:@selector(deleted) forControlEvents:(UIControlEventTouchUpInside)];
         self.b.hidden=YES;
+        
+        
+        self.nameB=[[UIButton alloc] initWithFrame:self.labelName.frame];
+        self.nameB.backgroundColor=[UIColor clearColor];
+        [self.contentView addSubview:self.nameB];
+        
     }
     return self;
 }
@@ -79,6 +85,7 @@
         self.b.hidden=NO;
         self.labelName.enabled=YES;
         CAKeyframeAnimation* anim=[CAKeyframeAnimation animation];
+        anim.delegate=self;
         anim.keyPath=@"transform.rotation";
         anim.values=@[@(angelToRandian(-1.5)),@(angelToRandian(arc4random()%1+1)),@(angelToRandian((arc4random()%1+1))),@(angelToRandian(arc4random()%1+1)),@(angelToRandian(-1.5))];
         anim.repeatCount=MAXFLOAT;
@@ -87,6 +94,12 @@
     }
     
 }
+
+-(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
+    [self.layer removeAllAnimations];
+    self.b.hidden=YES;
+}
+
 
 
 @end

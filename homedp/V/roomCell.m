@@ -25,6 +25,7 @@
         self.labelName.text=name;
         self.homeIcon.image=[UIImage imageNamed:@"room"];
     }else{
+        self.labelName.text=nil;
         UIButton *b=[[UIButton alloc] initWithFrame:self.contentView.bounds];
         b.backgroundColor=[UIColor clearColor];
         b.tag=10001;

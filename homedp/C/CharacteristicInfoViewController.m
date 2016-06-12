@@ -18,11 +18,16 @@ static NSString *characteristicCell=@"characteristicCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(update) name:@"upDateHome" object:nil];
     self.characteristicTable=[[UITableView alloc] initWithFrame:self.view.bounds style:(UITableViewStylePlain)];
     self.characteristicTable.delegate=self;
     self.characteristicTable.dataSource=self;
     [self.view addSubview:self.characteristicTable];
     self.accessory.delegate=self;
+}
+
+-(void)update{
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 -(void)accessory:(HMAccessory *)accessory service:(HMService *)service didUpdateValueForCharacteristic:(HMCharacteristic *)characteristic{
@@ -52,6 +57,7 @@ static NSString *characteristicCell=@"characteristicCell";
     }
     cell.textLabel.text=self.service.characteristics[indexPath.row].localizedDescription;
     id value=[NSString stringWithFormat:@"%@",self.service.characteristics[indexPath.row].value];
+
     if ([self.service.characteristics[indexPath.row].metadata.format isEqualToString:@"bool"]) {
         if ([self.service.characteristics[indexPath.row].value isEqual:@(0)]) {
             value=@"NO";
@@ -59,7 +65,11 @@ static NSString *characteristicCell=@"characteristicCell";
             value=@"YES";
         }
     }
+    if (![self.service.characteristics[indexPath.row].properties containsObject:@"HMCharacteristicPropertyReadable"]) {
+        value=@"不可读";
+    }
     cell.detailTextLabel.text=[NSString stringWithFormat:@"%@",value];
+    cell.selectionStyle=UITableViewCellSelectionStyleNone;
     return cell;
 }
 
